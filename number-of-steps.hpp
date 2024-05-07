@@ -8,6 +8,7 @@ uint64_t get_number_of_steps(const uint64_t number) {
 
     while (sum_of_factors != 1) {
         if (std::find(sums.begin(), sums.end(), sum_of_factors) != sums.end()) {
+            std::cout << "Loop found at step " << step << " for number " << number << std::endl;
             break;
         }
 
