@@ -1,10 +1,12 @@
 #include <vector>
 #include <algorithm>
+#include <iostream>
+#include <boost/multiprecision/cpp_int.hpp>
 
-uint64_t get_number_of_steps(const uint64_t number) {
-    uint64_t step = 1;
-    uint64_t sum_of_factors = get_factor_sum(number);
-    std::vector<uint64_t> sums;
+boost::multiprecision::cpp_int get_number_of_steps(const boost::multiprecision::cpp_int& number) {
+    boost::multiprecision::cpp_int step = 1;
+    boost::multiprecision::cpp_int sum_of_factors = get_factor_sum(number);
+    std::vector<boost::multiprecision::cpp_int> sums;
 
     while (sum_of_factors != 1) {
         if (std::find(sums.begin(), sums.end(), sum_of_factors) != sums.end()) {
@@ -13,7 +15,6 @@ uint64_t get_number_of_steps(const uint64_t number) {
         }
 
         step++;
-
         sums.push_back(sum_of_factors);
         sum_of_factors = get_factor_sum(sum_of_factors);
 
