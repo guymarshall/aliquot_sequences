@@ -1,10 +1,9 @@
 #include <vector>
 #include <algorithm>
 
-uint64_t get_number_of_steps(uint64_t number) {
+uint64_t get_number_of_steps(const uint64_t number) {
     uint64_t step = 1;
-    std::vector<uint64_t> factors = get_factors(number);
-    uint64_t sum_of_factors = factor_sum(factors);
+    uint64_t sum_of_factors = get_factor_sum(number);
     std::vector<uint64_t> sums;
 
     while (sum_of_factors != 1) {
@@ -15,8 +14,7 @@ uint64_t get_number_of_steps(uint64_t number) {
         step++;
 
         sums.push_back(sum_of_factors);
-        factors = get_factors(sum_of_factors);
-        sum_of_factors = factor_sum(factors);
+        sum_of_factors = get_factor_sum(sum_of_factors);
 
         std::cout << step << ": " << sum_of_factors << std::endl;
     }

@@ -7,11 +7,12 @@
 #include "factors.hpp"
 #include "number-of-steps.hpp"
 
+constinit uint64_t user_input = 138;
+// constinit uint64_t user_input = 276;
+
 int main() {
     const std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
-    uint64_t user_input = 138;
-    // uint64_t user_input = 276;
     uint64_t number_of_steps = get_number_of_steps(user_input);
     std::cout << "Number of steps for " << user_input << ": " << number_of_steps << std::endl;
 
