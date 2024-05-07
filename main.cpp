@@ -9,8 +9,8 @@
 
 #include <boost/multiprecision/cpp_int.hpp>
 
-constinit boost::multiprecision::cpp_int user_input = 138;
-// constinit boost::multiprecision::cpp_int user_input = 276;
+// constinit boost::multiprecision::cpp_int user_input = 138;
+constinit boost::multiprecision::cpp_int user_input = 276;
 
 int main() {
     const std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
