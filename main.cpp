@@ -2,9 +2,10 @@
 #include <chrono>
 #include <cmath>
 #include <vector>
+#include <algorithm>
 
 std::vector<uint64_t> get_factors(uint64_t number) {
-    std::vector<uint64_t> factors;
+    std::vector<uint64_t> factors; // TODO: calculate sum here instead of making vector
     uint64_t step = number % 2 == 0 ? 1 : 2;
 
     for (uint64_t i = 1; i <= std::sqrt(number); i += step) {
