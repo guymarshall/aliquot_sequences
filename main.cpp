@@ -69,7 +69,7 @@ int main()
     const std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
     const std::chrono::duration<double> duration = end - begin;
-    std::cout << "Duration: " << duration.count() << "seconds" << std::endl;
+    std::cout << "Duration: " << duration.count() << " seconds" << std::endl;
 
     return 0;
 }
