@@ -10,7 +10,7 @@ pub fn read_file_data(file: &File) -> (BigInt, BigInt) {
 
     let mut csv_reader: Reader<&[u8]> = ReaderBuilder::new().has_headers(false).from_reader(contents.as_bytes());
 
-    if let Some(Ok(record)) = csv_reader.records().next() {
+    if let Some(Ok(record)) = csv_reader.records().last() {
         let step: BigInt = record.get(0).unwrap().parse().unwrap_or_else(|_| BigInt::from(1));
         let sum_of_factors: BigInt = record.get(1).unwrap().parse().unwrap_or_else(|_| BigInt::from(0));
         return (step, sum_of_factors);

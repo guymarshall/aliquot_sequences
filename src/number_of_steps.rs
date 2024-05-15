@@ -26,7 +26,7 @@ pub fn get_number_of_steps(number: &BigInt) -> BigInt {
     let (mut step, mut sum_of_factors): (BigInt, BigInt) = read_file_data(&file);
 
     if sum_of_factors == BigInt::from(1) {
-        println!("Number: {} has already been calculated.", number);
+        println!("Number {} has already been calculated.", number);
         return step;
     }
 
