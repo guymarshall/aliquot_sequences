@@ -4,6 +4,7 @@ use std::io::Write;
 use std::path::Path;
 
 use num::BigInt;
+use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 
 use crate::factors::get_factor_sum;
 use crate::read_file::read_file_data;
@@ -38,7 +39,7 @@ pub fn get_number_of_steps(number: &BigInt) -> BigInt {
 
     let mut sums: Vec<BigInt> = Vec::new();
     while sum_of_factors != BigInt::from(1) {
-        if sums.iter().any(|sum| sum == &sum_of_factors) {
+        if sums.par_iter().any(|sum| sum == &sum_of_factors) {
             println!("Loop found at step {} for number {}", step, number);
             break;
         }
