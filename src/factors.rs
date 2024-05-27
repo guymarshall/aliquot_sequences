@@ -4,7 +4,7 @@ use num_traits::One;
 use num_traits::Zero;
 use rayon::prelude::*;
 
-fn sum_factors_range(number: &BigInt, start: &BigInt, end: &BigInt, step: &BigInt) -> BigInt {
+fn sum_factors_range(number: &BigInt, start: &BigInt, end: &BigInt, step: i32) -> BigInt {
     let mut range_sum: BigInt = BigInt::zero();
 
     let mut factor: BigInt = start.clone();
@@ -20,7 +20,7 @@ fn sum_factors_range(number: &BigInt, start: &BigInt, end: &BigInt, step: &BigIn
 }
 
 pub fn get_factor_sum(number: &BigInt) -> BigInt {
-    let step: BigInt = if number.is_even() { BigInt::one() } else { 2.to_bigint().unwrap() };
+    let step: i32 = if number.is_even() { 1 } else { 2 };
     let square_root: BigInt = number.sqrt();
     let thread_count: usize = num_cpus::get();
     let range_size: BigInt = &square_root / thread_count.to_bigint().unwrap();
@@ -34,7 +34,7 @@ pub fn get_factor_sum(number: &BigInt) -> BigInt {
             } else {
                 (future + 1) * &range_size
             };
-            sum_factors_range(number, &start, &end, &step)
+            sum_factors_range(number, &start, &end, step)
         })
         .collect();
     
