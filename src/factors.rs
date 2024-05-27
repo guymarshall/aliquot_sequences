@@ -20,7 +20,6 @@ fn sum_factors_range(number: &BigInt, start: &BigInt, end: &BigInt, step: &BigIn
 }
 
 pub fn get_factor_sum(number: &BigInt) -> BigInt {
-    let mut factor_sum: BigInt = BigInt::zero();
     let step: BigInt = if number.is_even() { BigInt::one() } else { 2.to_bigint().unwrap() };
     let square_root: BigInt = number.sqrt();
     let thread_count: usize = num_cpus::get();
@@ -38,12 +37,6 @@ pub fn get_factor_sum(number: &BigInt) -> BigInt {
             sum_factors_range(number, &start, &end, &step)
         })
         .collect();
-
-    for future in futures {
-        factor_sum += future;
-    }
-
-    factor_sum -= number;
-
-    factor_sum
+    
+    futures.par_iter().sum::<BigInt>() - number
 }
