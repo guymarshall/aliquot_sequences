@@ -1,42 +1,69 @@
-use num::{BigInt, Integer};
-use num::bigint::ToBigInt;
+use std::collections::HashSet;
+
+use num::BigInt;
+use num::FromPrimitive;
 use num_traits::One;
 use num_traits::Zero;
-use rayon::prelude::*;
 
-fn sum_factors_range(number: &BigInt, start: &BigInt, end: &BigInt, step: i32) -> BigInt {
-    let mut range_sum: BigInt = BigInt::zero();
-
-    let mut factor: BigInt = start.clone();
-    while factor <= *end {
-        if number.clone() % factor.clone() == BigInt::zero() {
-            range_sum += &factor;
-            range_sum += number / &factor;
-        }
-        factor += step;
+fn generate_permutations(numbers: &[BigInt], start: usize, path: &mut Vec<BigInt>, result: &mut HashSet<Vec<BigInt>>) {
+    if start == numbers.len() {
+        return;
     }
 
-    range_sum
+    for i in start..numbers.len() {
+        path.push(numbers[i].clone());
+        result.insert(path.clone());
+
+        generate_permutations(numbers, i + 1, path, result);
+
+        path.pop();
+    }
+}
+
+pub fn get_prime_factors(mut number: BigInt) -> Vec<BigInt> {
+    let mut factors: Vec<BigInt> = vec![];
+
+    let two: BigInt = BigInt::from_u32(2).unwrap();
+    let mut factor: BigInt = BigInt::from_u32(3).unwrap();
+
+    while &number % &two == BigInt::zero() {
+        factors.push(two.clone());
+        number /= &two;
+    }
+
+    let mut limit: BigInt = number.sqrt();
+    while factor <= limit {
+        while &number % &factor == BigInt::zero() {
+            factors.push(factor.clone());
+            number /= &factor;
+        }
+        factor += &two;
+        limit = number.sqrt();
+    }
+
+    if number > BigInt::one() {
+        factors.push(number);
+    }
+
+    factors
 }
 
 pub fn get_factor_sum(number: &BigInt) -> BigInt {
-    let step: i32 = if number.is_even() { 1 } else { 2 };
-    let square_root: BigInt = number.sqrt();
-    let thread_count: usize = num_cpus::get();
-    let range_size: BigInt = &square_root / thread_count.to_bigint().unwrap();
+    let numbers: Vec<BigInt> = get_prime_factors(number.clone());
+    let mut permutations: HashSet<Vec<BigInt>> = HashSet::new();
+    let mut path: Vec<BigInt> = Vec::new();
 
-    let futures: Vec<BigInt> = (0..thread_count)
-        .into_par_iter()
-        .map(|future| {
-            let start: BigInt = future * &range_size + BigInt::one();
-            let end: BigInt = if future == thread_count - 1 {
-                square_root.clone()
-            } else {
-                (future + 1) * &range_size
-            };
-            sum_factors_range(number, &start, &end, step)
-        })
-        .collect();
-    
-    futures.par_iter().sum::<BigInt>() - number
+    generate_permutations(&numbers, 0, &mut path, &mut permutations);
+
+    let mut factor_sum: BigInt = BigInt::zero();
+
+    permutations.iter().for_each(|permutation: &Vec<BigInt>| {
+        let product: BigInt = permutation.iter().fold(BigInt::one(), |accumulator: BigInt, element: &BigInt| accumulator * element);
+
+        if &product != number {
+            factor_sum += product;
+        }
+    });
+
+    factor_sum + 1
 }
