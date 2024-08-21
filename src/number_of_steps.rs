@@ -23,7 +23,8 @@ pub fn get_number_of_steps(number: &BigInt) -> BigInt {
         .open(filename)
         .unwrap();
 
-    let (mut step, mut sum_of_factors, mut sums): (BigInt, BigInt, Vec<BigInt>) = read_file_data(&file);
+    let (mut step, mut sum_of_factors, mut sums): (BigInt, BigInt, Vec<BigInt>) =
+        read_file_data(&file);
 
     if sum_of_factors == BigInt::from(1) {
         println!("Number {} has already been calculated.", number);
@@ -37,7 +38,7 @@ pub fn get_number_of_steps(number: &BigInt) -> BigInt {
     }
 
     while sum_of_factors != BigInt::from(1) {
-        if sums.iter().any(|sum| sum == &sum_of_factors) {
+        if sums.iter().any(|sum: &BigInt| sum == &sum_of_factors) {
             println!("Loop found at step {} for number {}", step, number);
             break;
         }

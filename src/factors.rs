@@ -4,8 +4,14 @@ use num::BigInt;
 use num::FromPrimitive;
 use num_traits::One;
 use num_traits::Zero;
+use rayon::prelude::*;
 
-fn generate_permutations(numbers: &[BigInt], start: usize, path: &mut Vec<BigInt>, result: &mut HashSet<Vec<BigInt>>) {
+fn generate_permutations(
+    numbers: &[BigInt],
+    start: usize,
+    path: &mut Vec<BigInt>,
+    result: &mut HashSet<Vec<BigInt>>,
+) {
     if start == numbers.len() {
         return;
     }
@@ -20,7 +26,7 @@ fn generate_permutations(numbers: &[BigInt], start: usize, path: &mut Vec<BigInt
     }
 }
 
-pub fn get_prime_factors(mut number: BigInt) -> Vec<BigInt> {
+fn get_prime_factors(mut number: BigInt) -> Vec<BigInt> {
     let mut factors: Vec<BigInt> = vec![];
 
     let two: BigInt = BigInt::from_u32(2).unwrap();
@@ -55,15 +61,19 @@ pub fn get_factor_sum(number: &BigInt) -> BigInt {
 
     generate_permutations(&numbers, 0, &mut path, &mut permutations);
 
-    let mut factor_sum: BigInt = BigInt::zero();
-
-    permutations.iter().for_each(|permutation: &Vec<BigInt>| {
-        let product: BigInt = permutation.iter().fold(BigInt::one(), |accumulator: BigInt, element: &BigInt| accumulator * element);
-
-        if &product != number {
-            factor_sum += product;
-        }
-    });
+    let factor_sum: BigInt = permutations
+        .par_iter()
+        .map(|permutation: &Vec<BigInt>| {
+            permutation
+                .iter()
+                .fold(BigInt::one(), |accumulator: BigInt, element: &BigInt| {
+                    accumulator * element
+                })
+        })
+        .filter(|product: &BigInt| product != number)
+        .reduce(BigInt::zero, |accumulator: BigInt, product: BigInt| {
+            accumulator + product
+        });
 
     factor_sum + 1
 }
